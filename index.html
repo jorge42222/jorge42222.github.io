@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 2px;
+        }
+        .grid-item {
+            border: 1px solid black;
+            background-color: white;
+            height: 55px;
+            width: 55px;
+        }
+        .filled {
+            background-color: black;
+        }
+        .center {
+            text-align: center;
+            font-size: 30px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div id="grid" class="grid-container"></div>
+    <br /br>
+    <div id="text" class="center"></div>
+
+    <script>
+        // Create 144 squares
+        const grid = document.getElementById('grid');
+        for (let i = 0; i < 144; i++) {
+            const div = document.createElement('div');
+            div.className = 'grid-item';
+            grid.appendChild(div);
+        }
+
+        // Function to fill squares based on current time
+        function fillSquares() {
+            const now = new Date();
+            const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const minutesSinceMidnight = (now - midnight) / 60000;
+            const squaresToFill = Math.floor(minutesSinceMidnight / 10);
+
+            const squares = document.getElementsByClassName('grid-item');
+            for (let i = 0; i < squares.length; i++) {
+                if (i < squaresToFill) {
+                    squares[i].classList.add('filled');
+                } else {
+                    squares[i].classList.remove('filled');
+                }
+            }
+
+            // Calculate percentage
+            const percentage = (squaresToFill / 144) * 100;
+            document.getElementById('text').innerHTML = `10 minute grid<br>${100-percentage.toFixed(2)}% of the day is left`;
+        }
+
+        // Check every minute if it's time to fill squares
+        setInterval(function() {
+            const now = new Date();
+            const minutes = now.getMinutes();
+            if (minutes % 10 === 0) {
+                fillSquares();
+            }
+        }, 60000);
+
+        // Fill squares on page load
+        fillSquares();
+    </script>
+</body>
+</html>
